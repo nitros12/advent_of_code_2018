@@ -1,4 +1,4 @@
-// pub mod day1;
+pub mod day1;
 
 use aoc_runner_derive::aoc_lib;
 

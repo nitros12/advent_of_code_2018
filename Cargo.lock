@@ -4,6 +4,7 @@ version = "0.1.0"
 dependencies = [
  "aoc-runner 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "aoc-runner-derive 0.1.3 (registry+https://github.com/rust-lang/crates.io-index)",
+ "int_hash 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -30,6 +31,19 @@ dependencies = [
  "serde 1.0.80 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde_derive 1.0.80 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde_json 1.0.33 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "byteorder"
+version = "1.2.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+
+[[package]]
+name = "int_hash"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+dependencies = [
+ "byteorder 1.2.7 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -102,6 +116,8 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 "checksum aoc-runner 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)" = "f9582962ee1abe7e86b9e1a6223f1424c9cf436e212f3c657df8300145260fad"
 "checksum aoc-runner-derive 0.1.3 (registry+https://github.com/rust-lang/crates.io-index)" = "43d89763be27b41cdf81160e85790b1590e4fdb6d64630bd289b8e395c519c2d"
 "checksum aoc-runner-internal 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)" = "274b0ba7f3669a45ec0aaacf94eb032a749de880ab776091576cca94037c9982"
+"checksum byteorder 1.2.7 (registry+https://github.com/rust-lang/crates.io-index)" = "94f88df23a25417badc922ab0f5716cc1330e87f71ddd9203b3a3ccd9cedf75d"
+"checksum int_hash 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)" = "82b10fb1274dcd264c1ca312b5d672dac395f696ebd383833ace2ddec4afe961"
 "checksum itoa 0.4.3 (registry+https://github.com/rust-lang/crates.io-index)" = "1306f3464951f30e30d12373d31c79fbd52d236e5e896fd92f96ec7babbbe60b"
 "checksum proc-macro2 0.4.24 (registry+https://github.com/rust-lang/crates.io-index)" = "77619697826f31a02ae974457af0b29b723e5619e113e9397b8b82c6bd253f09"
 "checksum quote 0.6.10 (registry+https://github.com/rust-lang/crates.io-index)" = "53fa22a1994bd0f9372d7a816207d8a2677ad0325b073f5c5332760f0fb62b5c"
