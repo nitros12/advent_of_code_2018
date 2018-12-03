@@ -1,11 +1,14 @@
 use aoc_runner_derive::{aoc, aoc_generator, Runner};
-use regex::Regex;
 use lazy_static::lazy_static;
-use ndarray::{Array2, s};
+use ndarray::{s, Array2};
+use regex::Regex;
 use std::collections::HashSet;
 
 lazy_static! {
-    static ref CLAIM_RE: Regex = Regex::new(r"#(?P<id>\d+) @ (?P<loffset>\d+),(?P<toffset>\d+): (?P<width>\d+)x(?P<height>\d+)").unwrap();
+    static ref CLAIM_RE: Regex = Regex::new(
+        r"#(?P<id>\d+) @ (?P<loffset>\d+),(?P<toffset>\d+): (?P<width>\d+)x(?P<height>\d+)"
+    )
+    .unwrap();
 }
 
 pub struct Rect {
@@ -37,9 +40,12 @@ pub fn input_generator(input: &str) -> Vec<Rect> {
 impl Rect {
     // [x_min, y_min, x_max, y_max]
     fn to_points(&self) -> (usize, usize, usize, usize) {
-            (self.x as usize, self.y as usize,
-             (self.x + self.w) as usize,
-             (self.y + self.h) as usize)
+        (
+            self.x as usize,
+            self.y as usize,
+            (self.x + self.w) as usize,
+            (self.y + self.h) as usize,
+        )
     }
 }
 
@@ -48,30 +54,28 @@ fn get_min_max(input: &[Rect]) -> (usize, usize, usize, usize) {
 
     let first = iter.next().unwrap();
 
-    iter.fold(first.to_points(),
-              |mut minmax, rect| {
-                  let points = rect.to_points();
+    iter.fold(first.to_points(), |mut minmax, rect| {
+        let points = rect.to_points();
 
-                  if points.0 < minmax.0 {
-                      minmax.0 = points.0;
-                  }
-                  if points.1 < minmax.1 {
-                      minmax.1 = points.1;
-                  }
-                  if points.2 > minmax.2 {
-                      minmax.2 = points.2;
-                  }
-                  if points.3 > minmax.3 {
-                      minmax.3 = points.3;
-                  }
+        if points.0 < minmax.0 {
+            minmax.0 = points.0;
+        }
+        if points.1 < minmax.1 {
+            minmax.1 = points.1;
+        }
+        if points.2 > minmax.2 {
+            minmax.2 = points.2;
+        }
+        if points.3 > minmax.3 {
+            minmax.3 = points.3;
+        }
 
-                  minmax
-              })
+        minmax
+    })
 }
 
 #[aoc(day3, part1)]
 pub fn part1(input: &[Rect]) -> usize {
-
     let (_min_x, _min_y, max_x, max_y) = get_min_max(input);
 
     let mut arr = Array2::<usize>::zeros((max_x, max_y));
