@@ -32,27 +32,6 @@ pub fn part2_stdlib(input: &[i32]) -> i32 {
         .unwrap_err()
 }
 
-#[aoc(day1, part2, IntHashSet)]
-pub fn part2_inthash(input: &[i32]) -> i32 {
-    use int_hash::IntBuildHasher;
-
-    // assume not that many uniques
-    let mut set = HashSet::<_, IntBuildHasher>::default();
-
-    input
-        .iter()
-        .cycle()
-        .try_fold(0, |freq, n| {
-            if !set.insert(freq) {
-                Err(freq)
-            } else {
-                Ok(freq + n)
-            }
-        })
-        .unwrap_err()
-}
-
-
 // math from https://www.reddit.com/r/adventofcode/comments/a20646/2018_day_1_solutions/eaukxu5/
 
 #[aoc(day1, part2, ActuallyGood)]
