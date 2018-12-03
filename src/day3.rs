@@ -2,6 +2,7 @@ use aoc_runner_derive::{aoc, aoc_generator, Runner};
 use regex::Regex;
 use lazy_static::lazy_static;
 use ndarray::{Array2, s};
+use ndarray_parallel::prelude::*;
 use rayon::prelude::*;
 use itertools::Itertools;
 
@@ -81,11 +82,6 @@ pub fn part1(input: &[Rect]) -> usize {
         arrslice += 1;
     }
 
-    (min_x..max_x)
-        .into_par_iter()
-        .map(|x|
-             (min_y..max_y)
-             .filter(|y| arr[[x, *y]] >= 2)
-             .count())
-        .sum()
+    arr.mapv_inplace(|x| if x >= 2 { 1 } else { 0 });
+    arr.sum()
 }
