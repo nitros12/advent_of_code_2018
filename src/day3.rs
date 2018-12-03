@@ -11,11 +11,11 @@ lazy_static! {
 }
 
 pub struct Rect {
-    id: usize,
-    x: usize,
-    y: usize,
-    w: usize,
-    h: usize,
+    id: u16,
+    x: u16,
+    y: u16,
+    w: u16,
+    h: u16,
 }
 
 #[aoc_generator(day3)]
@@ -39,9 +39,9 @@ pub fn input_generator(input: &str) -> Vec<Rect> {
 impl Rect {
     // [x_min, y_min, x_max, y_max]
     fn to_points(&self) -> (usize, usize, usize, usize) {
-            (self.x, self.y,
-             self.x + self.w,
-             self.y + self.h)
+            (self.x as usize, self.y as usize,
+             (self.x + self.w) as usize,
+             (self.y + self.h) as usize)
     }
 }
 
@@ -82,6 +82,6 @@ pub fn part1(input: &[Rect]) -> usize {
         arrslice += 1;
     }
 
-    arr.mapv_inplace(|x| if x >= 2 { 1 } else { 0 });
+    arr.mapv_inplace(|x| (x > 1) as usize);
     arr.sum()
 }
