@@ -1,22 +1,20 @@
 use aoc_runner_derive::{aoc, aoc_generator, Runner};
 
-use lazy_static::lazy_static;
-use regex::Regex;
-use itertools::Itertools;
 use chrono::prelude::*;
+use itertools::Itertools;
+use lazy_static::lazy_static;
 use ndarray::{s, Array1, Array2};
+use regex::Regex;
 
 lazy_static! {
-    static ref PARTIAL_EVENT_RE: Regex = Regex::new(
-        r"\[(?P<datetime>[^\]]+)\]\s*(?P<event>.+)"
-    )
-    .unwrap();
-
+    static ref PARTIAL_EVENT_RE: Regex =
+        Regex::new(r"\[(?P<datetime>[^\]]+)\]\s*(?P<event>.+)").unwrap();
     static ref EVENT_RE: Regex = Regex::new(concat!(
         r"(?P<begin>Guard #(?P<guard_id>\d+) begins shift)|",
         r"(?P<wakeup>wakes up)|",
         r"(?P<sleep>falls asleep)"
-    )).unwrap();
+    ))
+    .unwrap();
 }
 
 #[derive(Debug, Copy, Clone, PartialEq)]
@@ -31,7 +29,6 @@ pub struct Event {
     guard_id: usize,
     event_type: EventType,
 }
-
 
 #[aoc_generator(day4)]
 pub fn parse_input(input: &str) -> Vec<Event> {
@@ -49,8 +46,9 @@ pub fn parse_input(input: &str) -> Vec<Event> {
             Some(PartialEvent {
                 datetime: NaiveDateTime::parse_from_str(
                     caps.name("datetime")?.as_str(),
-                    "%Y-%m-%d %H:%M"
-                ).ok()?,
+                    "%Y-%m-%d %H:%M",
+                )
+                .ok()?,
                 event: caps.name("event")?.as_str(),
             })
         })
@@ -83,16 +81,20 @@ pub fn parse_input(input: &str) -> Vec<Event> {
         .collect()
 }
 
-fn as_sleep_periods<'a>(inp: &'a [Event]) -> impl Iterator<Item=(usize, NaiveDateTime, i64)> + 'a {
-    inp.iter()
-       .tuples()
-       .map(|(l, r)| {
-           assert_eq!(l.guard_id, r.guard_id);
-           assert_eq!(l.event_type, EventType::Asleep);
-           assert_eq!(r.event_type, EventType::WakeUp);
+fn as_sleep_periods<'a>(
+    inp: &'a [Event],
+) -> impl Iterator<Item = (usize, NaiveDateTime, i64)> + 'a {
+    inp.iter().tuples().map(|(l, r)| {
+        assert_eq!(l.guard_id, r.guard_id);
+        assert_eq!(l.event_type, EventType::Asleep);
+        assert_eq!(r.event_type, EventType::WakeUp);
 
-           (l.guard_id, l.datetime, (r.datetime - l.datetime).num_minutes())
-       })
+        (
+            l.guard_id,
+            l.datetime,
+            (r.datetime - l.datetime).num_minutes(),
+        )
+    })
 }
 
 #[aoc(day4, part1)]
@@ -101,36 +103,41 @@ pub fn part1(inp: &[Event]) -> usize {
         .map(|(id, s, d)| (id, (s, d)))
         .into_group_map();
 
-    let (most_asleep_guard, most_asleep_minute, _) = guards_periods.iter().fold((0, None, 0), |(max_guard, max_minute, max_duration), (guard, periods)| {
-        let mut arr = Array1::<u8>::zeros(60);
+    let (most_asleep_guard, most_asleep_minute, _) = guards_periods.iter().fold(
+        (0, None, 0),
+        |(max_guard, max_minute, max_duration), (guard, periods)| {
+            let mut arr = Array1::<u8>::zeros(60);
 
-        let mut minutes_asleep = 0;
+            let mut minutes_asleep = 0;
 
-        for period in periods {
-            let min_bound = period.0.time().minute() as usize;
-            let max_bound = min_bound + period.1 as usize;
-            let mut slice = arr.slice_mut(s![min_bound..max_bound]);
+            for period in periods {
+                let min_bound = period.0.time().minute() as usize;
+                let max_bound = min_bound + period.1 as usize;
+                let mut slice = arr.slice_mut(s![min_bound..max_bound]);
 
-            minutes_asleep += period.1;
+                minutes_asleep += period.1;
 
-            slice += 1;
-        }
+                slice += 1;
+            }
 
-        let (max_index, _) = arr.into_iter().enumerate().max_by_key(|(_, n)| *n).unwrap();
+            let (max_index, _) = arr.into_iter().enumerate().max_by_key(|(_, n)| *n).unwrap();
 
-        if minutes_asleep > max_duration {
-            (*guard, Some(max_index), minutes_asleep)
-        } else {
-            (max_guard, max_minute, max_duration)
-        }
-    });
+            if minutes_asleep > max_duration {
+                (*guard, Some(max_index), minutes_asleep)
+            } else {
+                (max_guard, max_minute, max_duration)
+            }
+        },
+    );
 
     return most_asleep_minute.unwrap() as usize * most_asleep_guard;
 }
 
-
 // returns maximum and second maximum
-fn max_2_by_key<T, U: Ord>(it: impl IntoIterator<Item=T>, fun: impl Fn(&T) -> U) -> Option<(T, T)> {
+fn max_2_by_key<T, U: Ord>(
+    it: impl IntoIterator<Item = T>,
+    fun: impl Fn(&T) -> U,
+) -> Option<(T, T)> {
     let mut it = it.into_iter();
 
     let mut max = it.next()?;
@@ -157,7 +164,6 @@ fn max_2_by_key<T, U: Ord>(it: impl IntoIterator<Item=T>, fun: impl Fn(&T) -> U)
     Some((max, max_2))
 }
 
-
 #[aoc(day4, part2)]
 pub fn part2(inp: &[Event]) -> usize {
     use bimap::BiMap;
@@ -166,10 +172,7 @@ pub fn part2(inp: &[Event]) -> usize {
         .map(|(id, s, d)| (id, (s, d)))
         .into_group_map();
 
-    let guard_idx_ids: BiMap<_, _> = guards_periods
-        .keys()
-        .enumerate()
-        .collect();
+    let guard_idx_ids: BiMap<_, _> = guards_periods.keys().enumerate().collect();
 
     let mut arrs = Array2::<u8>::zeros((guards_periods.len(), 60));
 
@@ -184,15 +187,15 @@ pub fn part2(inp: &[Event]) -> usize {
 
             slice += 1;
         }
-    };
+    }
 
-    let (col_idx, max_idx, _) = arrs.gencolumns()
+    let (col_idx, max_idx, _) = arrs
+        .gencolumns()
         .into_iter()
         .enumerate()
         .map(|(col_idx, col)| {
-            let ((max_idx, max_val), (_, max_2_val)) = max_2_by_key(
-                col.iter().enumerate(),
-                |(_, n)| *n).unwrap();
+            let ((max_idx, max_val), (_, max_2_val)) =
+                max_2_by_key(col.iter().enumerate(), |(_, n)| *n).unwrap();
 
             (col_idx, max_idx, max_val - max_2_val)
         })
