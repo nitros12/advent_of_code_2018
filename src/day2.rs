@@ -1,4 +1,4 @@
-use aoc_runner_derive::{aoc, Runner};
+use aoc_runner_derive::aoc;
 
 fn count_n(s: &str) -> (bool, bool) {
     s.chars().fold((false, false), |(two, three), c| {
