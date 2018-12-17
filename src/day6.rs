@@ -5,7 +5,7 @@ use itertools::Itertools;
 use lazy_static::lazy_static;
 use regex::Regex;
 use spade::{rtree::RTree, BoundingRect, SpatialObject};
-use std::collections::HashMap;
+use hashbrown::HashMap;
 
 #[derive(Debug, Copy, Clone, Eq, PartialEq, Hash)]
 pub struct TaxicabSpatial(pub Point2<i32>);

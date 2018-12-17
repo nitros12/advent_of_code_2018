@@ -2,7 +2,7 @@ use aoc_runner_derive::{aoc, aoc_generator};
 use lazy_static::lazy_static;
 use ndarray::{s, Array2};
 use regex::Regex;
-use std::collections::HashSet;
+use hashbrown::HashSet;
 
 lazy_static! {
     static ref CLAIM_RE: Regex = Regex::new(

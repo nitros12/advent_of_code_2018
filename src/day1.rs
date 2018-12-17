@@ -1,5 +1,5 @@
 use aoc_runner_derive::{aoc, aoc_generator};
-use std::collections::HashSet;
+use hashbrown::HashSet;
 
 #[aoc_generator(day1)]
 pub fn input_generator(input: &str) -> Vec<i32> {
@@ -37,7 +37,7 @@ pub fn part2_stdlib(input: &[i32]) -> i32 {
 #[aoc(day1, part2, ActuallyGood)]
 pub fn part2_actuallygood(input: &[i32]) -> i32 {
     use itertools::{Itertools, MinMaxResult};
-    use std::collections::HashMap;
+    use hashbrown::HashMap;
 
     let mut freq = 0;
     let mut frequencies = Vec::new();

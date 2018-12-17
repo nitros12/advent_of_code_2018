@@ -3,7 +3,7 @@ use aoc_runner_derive::aoc;
 use itertools::Itertools;
 use rayon::prelude::*;
 use ropey::Rope;
-use std::collections::HashSet;
+use hashbrown::HashSet;
 
 fn fix<T: Clone>(mut val: T, fun: impl Fn(&T) -> Option<T>) -> T {
     loop {
@@ -65,11 +65,12 @@ pub fn part2(input: &str) -> usize {
     let units: HashSet<_> = input.chars().map(|c| c.to_ascii_lowercase()).collect();
 
     units
-        .par_iter()
+        .into_iter()
+        .par_bridge()
         .map(|c| {
             let filtered: String = input
                 .chars()
-                .filter(|ic| ic.to_ascii_lowercase() != *c)
+                .filter(|ic| ic.to_ascii_lowercase() != c)
                 .collect();
 
             fix(Rope::from_str(&filtered), step_remove).len_chars()
